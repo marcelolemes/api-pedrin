@@ -1,25 +1,21 @@
 package org.acme.controller;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.QueryParam;
 
 import java.time.LocalDate;
 
 public class PersonDTO {
-    @QueryParam("id")
-    Long id;
+    @NotEmpty
+    @NotBlank(message = "Campo nome não pode ser vazio")
     @QueryParam("name")
     String name;
+
+    @NotNull(message = "Campo nascimento não pode ser vazio")
     @QueryParam("birth")
     LocalDate birth;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -33,12 +29,6 @@ public class PersonDTO {
     }
 
     public void setBirth(LocalDate birth) {
-        this.birth = birth;
-    }
-
-    public PersonDTO(Long id, String name, LocalDate birth) {
-        this.id = id;
-        this.name = name;
         this.birth = birth;
     }
 

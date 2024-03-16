@@ -1,14 +1,15 @@
 package org.acme.controller;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.entity.PersonEntity;
-import org.acme.repository.PrincipalRepository;
 import org.acme.service.PrincipalService;
 import org.acme.util.PersonMapper;
 
-import java.util.List;
 import java.util.Optional;
 
 @Path("/v1/api")
@@ -20,6 +21,7 @@ public class PrincipalController {
     }
 
     @GET
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response fetchAll() {
         return Response.ok(service.fetchAll()).build();
@@ -27,35 +29,44 @@ public class PrincipalController {
 
     @GET
     @Path("/{id}")
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response fetchById(@PathParam("id") Long id) {
         return Response.ok(service.fetchById(id)).build();
     }
 
     @POST
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(@BeanParam PersonDTO dto) {
+    public Response create(@Valid @BeanParam PersonDTO dto) {
         final PersonEntity entity = Optional.of(dto).map(PersonMapper::toEntity).orElse(new PersonEntity());
         service.create(entity);
         return Response.noContent().build();
     }
 
     @PUT
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@BeanParam PersonDTO dto) {
+    @Path("{id}")
+    public Response update(@NotBlank(message = "Campo id não pode ser vazio")
+                               @PathParam("id")
+                               Long id, @Valid @BeanParam PersonDTO dto) {
         final PersonEntity entity = Optional.of(dto).map(PersonMapper::toEntity).orElse(new PersonEntity());
-        service.update(entity);
+        service.update(id, entity);
         return Response.noContent().build();
     }
 
     @DELETE
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response delete(@BeanParam PersonDTO dto) {
-        final PersonEntity entity = Optional.of(dto).map(PersonMapper::toEntity).orElse(new PersonEntity());
-        service.delete(entity);
+    @Path("{id}")
+    public Response delete(@NotBlank(message = "Campo id não pode ser vazio")
+                               @PathParam("id")
+                               Long id) {
+        service.delete(id);
         return Response.noContent().build();
     }
 }
