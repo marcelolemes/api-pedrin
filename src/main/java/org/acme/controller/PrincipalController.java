@@ -50,8 +50,7 @@ public class PrincipalController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response update(@NotBlank(message = "Campo id não pode ser vazio")
-                               @PathParam("id")
+    public Response update(@PathParam("id")
                                Long id, @Valid @BeanParam PersonDTO dto) {
         final PersonEntity entity = Optional.of(dto).map(PersonMapper::toEntity).orElse(new PersonEntity());
         service.update(id, entity);
@@ -63,8 +62,7 @@ public class PrincipalController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response delete(@NotBlank(message = "Campo id não pode ser vazio")
-                               @PathParam("id")
+    public Response delete(@PathParam("id")
                                Long id) {
         service.delete(id);
         return Response.noContent().build();
