@@ -9,7 +9,7 @@ public final class PersonMapper {
     }
 
     public static PersonEntity toEntity(PersonDTO dto) {
-        return new PersonEntity(dto.getName(), dto.getBirth());
+        return new PersonEntity(dto.name(), dto.birth());
     }
 
     public static void updateEntity(PersonEntity firstEntity, PersonEntity newEntity) {
